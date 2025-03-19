@@ -1,0 +1,26 @@
+[package]
+name = "video-toolkit"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name"]
+description = "Video processing utilities for MP4 files"
+
+[dependencies]
+anyhow = "1.0.75"         # Error handling
+clap = { version = "4.4.6", features = ["derive"] }  # Command-line argument parsing
+eframe = "0.24.0"         # egui framework for GUI
+egui = "0.24.0"           # GUI library
+lazy_static = "1.4.0"     # Lazy static initialization
+regex = "1.9.5"           # Regular expressions for timestamp validation
+rfd = "0.12.0"            # Native file dialogs
+thiserror = "1.0.48"      # Custom error definitions
+
+[workspace]
+members = [
+    "crates/common",
+    "crates/clipper",
+    "crates/gif_converter",
+    "crates/splitter",
+    "crates/merger",
+    "crates/ui",
+]
