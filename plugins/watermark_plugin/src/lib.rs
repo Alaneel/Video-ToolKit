@@ -53,9 +53,13 @@ impl Plugin for WatermarkPlugin {
         let watermark_text = params.get("watermark_text")
             .ok_or("Watermark text parameter is missing")?;
 
-        let position = params.get("position").unwrap_or(&"bottom_right".to_string());
-        let font_size = params.get("font_size").unwrap_or(&"24".to_string());
-        let font_color = params.get("font_color").unwrap_or(&"white".to_string());
+        let default_position = "bottom_right".to_string();
+        let default_font_size = "24".to_string();
+        let default_font_color = "white".to_string();
+        
+        let position = params.get("position").unwrap_or(&default_position);
+        let font_size = params.get("font_size").unwrap_or(&default_font_size);
+        let font_color = params.get("font_color").unwrap_or(&default_font_color);
 
         // Verify input file exists
         if !Path::new(input_file).exists() {
