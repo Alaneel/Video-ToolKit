@@ -1,0 +1,9 @@
+[package]
+name = "clipper"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common = { path = "../common" }
+anyhow = "1.0.75"
+regex = "1.9.5"

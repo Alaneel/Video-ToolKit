@@ -1,0 +1,10 @@
+[package]
+name = "common"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.75"
+thiserror = "1.0.48"
+regex = "1.9.5"
+lazy_static = "1.4.0"
