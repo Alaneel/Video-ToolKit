@@ -1,4 +1,4 @@
 pub mod app;
 pub mod tabs;
 
-pub use app::VideoToolkitApp;
+pub use app::VideoToolKitApp;

@@ -1,5 +1,5 @@
 [package]
-name = "video-toolkit"
+name = "Video-ToolKit"
 version = "0.1.0"
 edition = "2021"
 authors = ["Your Name"]
@@ -14,6 +14,16 @@ lazy_static = "1.4.0"     # Lazy static initialization
 regex = "1.9.5"           # Regular expressions for timestamp validation
 rfd = "0.12.0"            # Native file dialogs
 thiserror = "1.0.48"      # Custom error definitions
+bytemuck = "=1.14.0"      # Pinned to avoid edition2024 dependency
+bytemuck_derive = "=1.5.0" # Pinned to avoid edition2024 dependency
+
+# Workspace dependencies
+common = { path = "crates/common" }
+clipper = { path = "crates/clipper" }
+gif_converter = { path = "crates/gif_converter" }
+splitter = { path = "crates/splitter" }
+merger = { path = "crates/merger" }
+ui = { path = "crates/ui" }
 
 [workspace]
 members = [

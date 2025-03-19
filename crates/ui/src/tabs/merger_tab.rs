@@ -1,10 +1,11 @@
-use eframe::egui::{self, TextEdit, Ui};
+use eframe::egui::{self, Ui};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
 use merger::{extract_audio, merge_audio_video};
 
+#[derive(PartialEq)]
 pub enum AudioSource {
     File,
     Extract,

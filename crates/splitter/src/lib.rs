@@ -57,10 +57,11 @@ pub fn split_video(
         println!("Creating slice {}/5 (x={}, width={})...", i + 1, x_pos, width);
 
         // Build FFmpeg command
+        let filter_value = format!("crop={}:1080:{}:0", width, x_pos);
         let mut args = vec![
             "-y",
             "-i", input_file,
-            "-filter:v", &format!("crop={}:1080:{}:0", width, x_pos),
+            "-filter:v", &filter_value,
         ];
 
         // Add encoding options

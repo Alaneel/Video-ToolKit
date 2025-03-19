@@ -1,4 +1,4 @@
-# Video Toolkit
+# Video-ToolKit
 
 A comprehensive toolkit for video processing tasks, built in Rust.
 
@@ -19,8 +19,8 @@ A comprehensive toolkit for video processing tasks, built in Rust.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/video-toolkit.git
-cd video-toolkit
+git clone https://github.com/yourusername/Video-ToolKit.git
+cd Video-ToolKit
 ```
 
 2. Build the project:

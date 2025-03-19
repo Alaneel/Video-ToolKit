@@ -1,5 +1,5 @@
-use eframe::{egui, epi};
-use egui::{Color32, RichText, Ui};
+use eframe::egui;
+use egui::{Color32, RichText};
 use std::sync::{Arc, Mutex};
 
 use common::check_ffmpeg;
@@ -18,7 +18,7 @@ pub enum Tab {
     Merger,
 }
 
-pub struct VideoToolkitApp {
+pub struct VideoToolKitApp {
     active_tab: Tab,
     status: Arc<Mutex<String>>,
     processing: Arc<Mutex<bool>>,
@@ -29,7 +29,7 @@ pub struct VideoToolkitApp {
     merger_tab: MergerTab,
 }
 
-impl Default for VideoToolkitApp {
+impl Default for VideoToolKitApp {
     fn default() -> Self {
         let status = Arc::new(Mutex::new("Ready".to_string()));
         let processing = Arc::new(Mutex::new(false));
@@ -47,14 +47,10 @@ impl Default for VideoToolkitApp {
     }
 }
 
-impl epi::App for VideoToolkitApp {
-    fn name(&self) -> &str {
-        "Video Toolkit"
-    }
-
-    fn update(&mut self, ctx: &egui::Context, _frame: &epi::Frame) {
+impl eframe::App for VideoToolKitApp {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Video Toolkit");
+            ui.heading("Video-ToolKit");
 
             // Check for FFmpeg
             if !check_ffmpeg() {

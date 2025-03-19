@@ -1,4 +1,4 @@
-use eframe::egui::{self, TextEdit, Ui};
+use eframe::egui::{self, Ui};
 use std::sync::{Arc, Mutex};
 use std::thread;
 

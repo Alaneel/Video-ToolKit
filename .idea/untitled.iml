@@ -2,6 +2,12 @@
 <module type="EMPTY_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/crates/clipper/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/common/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/gif_converter/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/merger/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/splitter/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/ui/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>

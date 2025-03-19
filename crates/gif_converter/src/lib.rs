@@ -43,10 +43,11 @@ pub fn convert_mp4_to_gif(
     let palette_file = format!("{}.png", output_file);
 
     // Calculate palette first (improved quality)
+    let palette_filter = format!("fps={},scale={}:-1:flags=lanczos,palettegen", fps, width);
     let palette_args = vec![
         "-y",
         "-i", input_file,
-        "-vf", &format!("fps={},scale={}:-1:flags=lanczos,palettegen", fps, width),
+        "-vf", &palette_filter,
         &palette_file,
     ];
 
@@ -57,11 +58,12 @@ pub fn convert_mp4_to_gif(
     }
 
     // Convert using the palette
+    let filter_complex = format!("fps={},scale={}:-1:flags=lanczos[x];[x][1:v]paletteuse", fps, width);
     let convert_args = vec![
         "-y",
         "-i", input_file,
         "-i", &palette_file,
-        "-filter_complex", &format!("fps={},scale={}:-1:flags=lanczos[x];[x][1:v]paletteuse", fps, width),
+        "-filter_complex", &filter_complex,
         output_file,
     ];
 
@@ -104,7 +106,7 @@ pub fn optimize_conversion(
     let fps_options = vec![10, 8, 5];
 
     for width in width_options {
-        for fps in fps_options {
+        for &fps in &fps_options {
             println!("Attempting conversion with width={}px, fps={}...", width, fps);
 
             match convert_mp4_to_gif(input_file, output_file, Some(width), fps, max_size_mb) {

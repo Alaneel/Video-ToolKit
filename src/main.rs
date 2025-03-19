@@ -1,13 +1,12 @@
-use eframe::{egui, epi, NativeOptions};
-use std::env;
+use eframe::NativeOptions;
 use clap::{Parser, Subcommand};
 
 use common::check_ffmpeg;
 use clipper::{clip_video, parse_time_ranges};
 use gif_converter::{convert_mp4_to_gif, optimize_conversion};
 use splitter::split_video;
-use merger::{extract_audio, merge_audio_video};
-use ui::VideoToolkitApp;
+use merger::merge_audio_video;
+use ui::VideoToolKitApp;
 
 #[derive(Parser)]
 #[clap(author, version, about = "Video processing utilities")]
@@ -122,9 +121,12 @@ fn main() -> Result<(), eframe::Error> {
 
     // Run GUI if no subcommand is provided
     if cli.command.is_none() {
-        let app = VideoToolkitApp::default();
-        let native_options = NativeOptions::default();
-        return eframe::run_native(Box::new(app), native_options);
+        let options = NativeOptions::default();
+        return eframe::run_native(
+            "Video-ToolKit",
+            options,
+            Box::new(|_cc| Box::new(VideoToolKitApp::default()))
+        );
     }
 
     // Otherwise, run the appropriate command-line tool

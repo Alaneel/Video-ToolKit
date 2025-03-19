@@ -1,5 +1,4 @@
-use eframe::egui::{self, TextEdit, Ui};
-use std::path::PathBuf;
+use eframe::egui::{self, Ui};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
@@ -64,11 +63,13 @@ impl ClipperTab {
         ui.heading("Time Ranges (format: START-END, e.g., 00:01:00-00:02:00)");
 
         let mut remove_idx = None;
-        for (i, range) in self.time_ranges.iter_mut().enumerate() {
+        let len = self.time_ranges.len();
+        for i in 0..len {
+            let range = &mut self.time_ranges[i];
             ui.horizontal(|ui| {
                 ui.label(format!("Range {}:", i + 1));
                 ui.text_edit_singleline(range);
-                if ui.button("Remove").clicked() && self.time_ranges.len() > 1 {
+                if ui.button("Remove").clicked() && len > 1 {
                     remove_idx = Some(i);
                 }
             });
