@@ -9,6 +9,9 @@ use crate::tabs::{
     gif_transparency_tab::GifTransparencyTab,
     splitter_tab::SplitterTab,
     merger_tab::MergerTab,
+    batch_tab::BatchTab,
+    profiles_tab::ProfilesTab,
+    plugins_tab::PluginsTab,
 };
 
 #[derive(PartialEq)]
@@ -18,6 +21,9 @@ pub enum Tab {
     GifTransparency,
     Splitter,
     Merger,
+    Batch,      // New tab
+    Profiles,   // New tab
+    Plugins,    // New tab
 }
 
 pub struct VideoToolKitApp {
@@ -30,6 +36,9 @@ pub struct VideoToolKitApp {
     gif_transparency_tab: GifTransparencyTab,
     splitter_tab: SplitterTab,
     merger_tab: MergerTab,
+    batch_tab: BatchTab,           // New tab
+    profiles_tab: ProfilesTab,     // New tab
+    plugins_tab: PluginsTab,       // New tab
 }
 
 impl Default for VideoToolKitApp {
@@ -47,6 +56,9 @@ impl Default for VideoToolKitApp {
             gif_transparency_tab: GifTransparencyTab::new(Arc::clone(&status), Arc::clone(&processing)),
             splitter_tab: SplitterTab::new(Arc::clone(&status), Arc::clone(&processing)),
             merger_tab: MergerTab::new(Arc::clone(&status), Arc::clone(&processing)),
+            batch_tab: BatchTab::new(Arc::clone(&status), Arc::clone(&processing)),
+            profiles_tab: ProfilesTab::new(Arc::clone(&status), Arc::clone(&processing)),
+            plugins_tab: PluginsTab::new(Arc::clone(&status), Arc::clone(&processing)),
         }
     }
 }
@@ -67,21 +79,20 @@ impl eframe::App for VideoToolKitApp {
 
             // Tab selector
             ui.horizontal(|ui| {
-                if ui.selectable_label(self.active_tab == Tab::Clipper, "Clip Video").clicked() {
-                    self.active_tab = Tab::Clipper;
-                }
-                if ui.selectable_label(self.active_tab == Tab::GifConverter, "Convert to GIF").clicked() {
-                    self.active_tab = Tab::GifConverter;
-                }
-                if ui.selectable_label(self.active_tab == Tab::GifTransparency, "GIF Transparency").clicked() {
-                    self.active_tab = Tab::GifTransparency;
-                }
-                if ui.selectable_label(self.active_tab == Tab::Splitter, "Split Video").clicked() {
-                    self.active_tab = Tab::Splitter;
-                }
-                if ui.selectable_label(self.active_tab == Tab::Merger, "Merge Audio/Video").clicked() {
-                    self.active_tab = Tab::Merger;
-                }
+                // Main operations tabs
+                ui.selectable_value(&mut self.active_tab, Tab::Clipper, "Clip Video");
+                ui.selectable_value(&mut self.active_tab, Tab::GifConverter, "Convert to GIF");
+                ui.selectable_value(&mut self.active_tab, Tab::GifTransparency, "GIF Transparency");
+                ui.selectable_value(&mut self.active_tab, Tab::Splitter, "Split Video");
+                ui.selectable_value(&mut self.active_tab, Tab::Merger, "Merge Audio/Video");
+
+                // Separator
+                ui.separator();
+
+                // Advanced features tabs
+                ui.selectable_value(&mut self.active_tab, Tab::Batch, "Batch Processing");
+                ui.selectable_value(&mut self.active_tab, Tab::Profiles, "Profiles");
+                ui.selectable_value(&mut self.active_tab, Tab::Plugins, "Plugins");
             });
 
             ui.separator();
@@ -93,6 +104,9 @@ impl eframe::App for VideoToolKitApp {
                 Tab::GifTransparency => self.gif_transparency_tab.ui(ui),
                 Tab::Splitter => self.splitter_tab.ui(ui),
                 Tab::Merger => self.merger_tab.ui(ui),
+                Tab::Batch => self.batch_tab.ui(ui),
+                Tab::Profiles => self.profiles_tab.ui(ui),
+                Tab::Plugins => self.plugins_tab.ui(ui),
             }
 
             // Status bar

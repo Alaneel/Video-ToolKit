@@ -16,6 +16,8 @@ rfd = "0.12.0"            # Native file dialogs
 thiserror = "1.0.48"      # Custom error definitions
 bytemuck = "=1.14.0"      # Pinned to avoid edition2024 dependency
 bytemuck_derive = "=1.5.0" # Pinned to avoid edition2024 dependency
+serde = { version = "1.0", features = ["derive"] } # Serialization for profiles
+serde_json = "1.0"        # JSON serialization
 
 # Workspace dependencies
 common = { path = "crates/common" }
@@ -25,6 +27,9 @@ gif_transparency = { path = "crates/gif_transparency" }
 splitter = { path = "crates/splitter" }
 merger = { path = "crates/merger" }
 ui = { path = "crates/ui" }
+plugin_system = { path = "crates/plugin_system" }
+profile_system = { path = "crates/profile_system" }
+batch_processing = { path = "crates/batch_processing" }
 
 [workspace]
 members = [
@@ -35,4 +40,7 @@ members = [
     "crates/splitter",
     "crates/merger",
     "crates/ui",
+    "crates/plugin_system",
+    "crates/profile_system",
+    "crates/batch_processing", "plugins/watermark_plugin",
 ]

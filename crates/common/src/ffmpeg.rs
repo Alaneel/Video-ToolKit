@@ -1,4 +1,5 @@
 use std::path::Path;
+use crate::formats::{FormatType, detect_format};
 use std::process::{Command, Output};
 use regex::Regex;
 use lazy_static::lazy_static;
@@ -109,5 +110,115 @@ pub fn get_file_size_mb(file_path: &Path) -> f64 {
     match std::fs::metadata(file_path) {
         Ok(metadata) => metadata.len() as f64 / (1024.0 * 1024.0),
         Err(_) => 0.0,
+    }
+}
+
+/// Get output container format extension based on input format and conversion type
+pub fn get_output_format(input_path: &Path, target_format: Option<&str>) -> Result<String> {
+    // If target format is explicitly specified, use that
+    if let Some(format) = target_format {
+        return Ok(format.to_string());
+    }
+
+    // Otherwise, infer from input file
+    if let Some(format_type) = detect_format(input_path) {
+        match format_type {
+            FormatType::Video(_) => Ok("mp4".to_string()),
+            FormatType::Audio(_) => Ok("mp3".to_string()),
+            FormatType::Image(_) => Ok("png".to_string()),
+        }
+    } else {
+        // Default to MP4 if unable to determine
+        Ok("mp4".to_string())
+    }
+}
+
+/// Get FFmpeg codec options for a specific format
+pub fn get_codec_options(format: &str) -> Vec<String> {
+    match format.to_lowercase().as_str() {
+        // Video formats
+        "mp4" => vec!["-c:v", "libx264", "-c:a", "aac"],
+        "webm" => vec!["-c:v", "libvpx", "-c:a", "libvorbis"],
+        "mkv" => vec!["-c:v", "libx264", "-c:a", "aac"],
+        "avi" => vec!["-c:v", "libx264", "-c:a", "mp3"],
+        "mov" => vec!["-c:v", "libx264", "-c:a", "aac"],
+        "flv" => vec!["-c:v", "libx264", "-c:a", "aac"],
+        "wmv" => vec!["-c:v", "wmv2", "-c:a", "wmav2"],
+        "ogv" => vec!["-c:v", "libtheora", "-c:a", "libvorbis"],
+
+        // Audio formats
+        "mp3" => vec!["-c:a", "libmp3lame"],
+        "aac" => vec!["-c:a", "aac"],
+        "wav" => vec!["-c:a", "pcm_s16le"],
+        "flac" => vec!["-c:a", "flac"],
+        "ogg" => vec!["-c:a", "libvorbis"],
+        "m4a" => vec!["-c:a", "aac"],
+
+        // Image formats (animation)
+        "gif" => vec!["-c:v", "gif"],
+        "apng" => vec!["-c:v", "apng"],
+
+        // Default to H.264 + AAC
+        _ => vec!["-c:v", "libx264", "-c:a", "aac"],
+    }.iter().map(|s| s.to_string()).collect()
+}
+
+/// Check if a format is supported for a specific operation
+pub fn is_format_supported_for_operation(format: &str, operation: &str) -> bool {
+    match operation {
+        "clipper" => {
+            matches!(format.to_lowercase().as_str(),
+                "mp4" | "mkv" | "avi" | "mov" | "webm" | "flv" | "ts" | "m4v" | "mpeg" | "ogv")
+        },
+        "gif_converter" => {
+            matches!(format.to_lowercase().as_str(),
+                "mp4" | "mkv" | "avi" | "mov" | "webm" | "flv")
+        },
+        "gif_transparency" => {
+            format.to_lowercase() == "gif"
+        },
+        "splitter" => {
+            matches!(format.to_lowercase().as_str(),
+                "mp4" | "mkv" | "avi" | "mov" | "webm")
+        },
+        "merger" => {
+            // Audio formats for the audio component
+            matches!(format.to_lowercase().as_str(),
+                "mp3" | "aac" | "wav" | "flac" | "ogg" | "m4a") ||
+                // Video formats for the video component
+                matches!(format.to_lowercase().as_str(),
+                "mp4" | "mkv" | "avi" | "mov" | "webm" | "flv")
+        },
+        _ => false,
+    }
+}
+
+/// Get all supported formats for a specific operation
+pub fn get_supported_formats(operation: &str) -> Vec<String> {
+    match operation {
+        "clipper" => {
+            vec!["mp4", "mkv", "avi", "mov", "webm", "flv", "ts", "m4v", "mpeg", "ogv"]
+                .iter().map(|s| s.to_string()).collect()
+        },
+        "gif_converter" => {
+            vec!["mp4", "mkv", "avi", "mov", "webm", "flv"]
+                .iter().map(|s| s.to_string()).collect()
+        },
+        "gif_transparency" => {
+            vec!["gif"].iter().map(|s| s.to_string()).collect()
+        },
+        "splitter" => {
+            vec!["mp4", "mkv", "avi", "mov", "webm"]
+                .iter().map(|s| s.to_string()).collect()
+        },
+        "merger" => {
+            // Audio formats
+            let audio = vec!["mp3", "aac", "wav", "flac", "ogg", "m4a"];
+            // Video formats
+            let video = vec!["mp4", "mkv", "avi", "mov", "webm", "flv"];
+
+            [audio, video].concat().iter().map(|s| s.to_string()).collect()
+        },
+        _ => Vec::new(),
     }
 }
