@@ -21,6 +21,7 @@ bytemuck_derive = "=1.5.0" # Pinned to avoid edition2024 dependency
 common = { path = "crates/common" }
 clipper = { path = "crates/clipper" }
 gif_converter = { path = "crates/gif_converter" }
+gif_transparency = { path = "crates/gif_transparency" }
 splitter = { path = "crates/splitter" }
 merger = { path = "crates/merger" }
 ui = { path = "crates/ui" }
@@ -30,6 +31,7 @@ members = [
     "crates/common",
     "crates/clipper",
     "crates/gif_converter",
+    "crates/gif_transparency",
     "crates/splitter",
     "crates/merger",
     "crates/ui",

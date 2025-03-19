@@ -1,9 +1,11 @@
 use eframe::NativeOptions;
 use clap::{Parser, Subcommand};
+use std::path::PathBuf;
 
 use common::check_ffmpeg;
 use clipper::{clip_video, parse_time_ranges};
 use gif_converter::{convert_mp4_to_gif, optimize_conversion};
+use gif_transparency::{batch_process_gifs, process_directory};
 use splitter::split_video;
 use merger::merge_audio_video;
 use ui::VideoToolKitApp;
@@ -63,6 +65,35 @@ enum Commands {
         /// Try multiple settings to achieve size target
         #[clap(long)]
         optimize: bool,
+    },
+
+    /// Make GIF backgrounds transparent by modifying trailer byte
+    GifTransparency {
+        /// Input GIF files or directories
+        #[clap(required = true)]
+        inputs: Vec<PathBuf>,
+
+        /// Process directories recursively
+        #[clap(short, long)]
+        recursive: bool,
+
+        /// Create backup of original files
+        #[clap(short, long)]
+        backup: bool,
+    },
+
+    /// Make all GIFs in a directory transparent
+    GifTransparencyDir {
+        /// Directory containing GIF files
+        directory: String,
+
+        /// Process directories recursively
+        #[clap(short, long)]
+        recursive: bool,
+
+        /// Create backup of original files
+        #[clap(short, long)]
+        backup: bool,
     },
 
     /// Split a 1920x1080 MP4 video into 5 equal vertical slices
@@ -187,6 +218,42 @@ fn main() -> Result<(), eframe::Error> {
                 Ok(false) => {
                     eprintln!("Output file exceeds size limit (> {}MB).", max_size);
                     std::process::exit(1);
+                },
+                Err(e) => {
+                    eprintln!("Error: {}", e);
+                    std::process::exit(1);
+                }
+            }
+        },
+
+        Commands::GifTransparency { inputs, recursive, backup } => {
+            println!("Processing GIF files for transparency...");
+
+            match batch_process_gifs(&inputs, recursive, backup) {
+                Ok((success_count, total_count)) => {
+                    println!("Successfully processed {}/{} GIF files", success_count, total_count);
+                    if success_count < total_count {
+                        eprintln!("Failed to process {} GIF files", total_count - success_count);
+                        std::process::exit(1);
+                    }
+                },
+                Err(e) => {
+                    eprintln!("Error: {}", e);
+                    std::process::exit(1);
+                }
+            }
+        },
+
+        Commands::GifTransparencyDir { directory, recursive, backup } => {
+            println!("Processing all GIFs in directory: {}", directory);
+
+            match process_directory(&directory, recursive, backup) {
+                Ok((success_count, total_count)) => {
+                    println!("Successfully processed {}/{} GIF files", success_count, total_count);
+                    if success_count < total_count {
+                        eprintln!("Failed to process {} GIF files", total_count - success_count);
+                        std::process::exit(1);
+                    }
                 },
                 Err(e) => {
                     eprintln!("Error: {}", e);

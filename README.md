@@ -6,6 +6,7 @@ A comprehensive toolkit for video processing tasks, built in Rust.
 
 - **Video Clipper**: Extract specific time segments from MP4 videos
 - **GIF Converter**: Convert MP4 videos to optimized GIF format
+- **GIF Transparency**: Batch process GIFs to make backgrounds transparent
 - **Video Splitter**: Split a 1920x1080 video into 5 equal vertical slices
 - **Audio/Video Merger**: Merge video with audio from different sources
 
@@ -70,6 +71,24 @@ Options:
 - `--max-size` or `-s`: Maximum output size in MB (default: 5.0)
 - `--optimize`: Try multiple settings to achieve target size
 
+#### GIF Transparency
+
+There are two modes for processing GIFs to make their backgrounds transparent:
+
+Process specific GIF files:
+```bash
+cargo run --release -- gif-transparency input1.gif input2.gif --backup
+```
+
+Process all GIFs in a directory:
+```bash
+cargo run --release -- gif-transparency-dir ./gifs --recursive --backup
+```
+
+Options:
+- `--recursive` or `-r`: Process subdirectories recursively
+- `--backup` or `-b`: Create backup of original files before processing
+
 #### Video Splitter
 
 ```bash
@@ -103,9 +122,14 @@ This project uses a workspace structure:
 - `common`: Shared utilities and error handling
 - `clipper`: Video clipping functionality
 - `gif_converter`: MP4 to GIF conversion
+- `gif_transparency`: GIF transparency processing
 - `splitter`: Video splitting functionality
 - `merger`: Audio/video merging functionality
 - `ui`: GUI components using egui
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 

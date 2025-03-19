@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 clipper = { path = "../clipper" }
 gif_converter = { path = "../gif_converter" }
+gif_transparency = { path = "../gif_transparency" }
 splitter = { path = "../splitter" }
 merger = { path = "../merger" }
 common = { path = "../common" }

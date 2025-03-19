@@ -6,6 +6,7 @@ use common::check_ffmpeg;
 use crate::tabs::{
     clipper_tab::ClipperTab,
     gif_converter_tab::GifConverterTab,
+    gif_transparency_tab::GifTransparencyTab,
     splitter_tab::SplitterTab,
     merger_tab::MergerTab,
 };
@@ -14,6 +15,7 @@ use crate::tabs::{
 pub enum Tab {
     Clipper,
     GifConverter,
+    GifTransparency,
     Splitter,
     Merger,
 }
@@ -25,6 +27,7 @@ pub struct VideoToolKitApp {
 
     clipper_tab: ClipperTab,
     gif_converter_tab: GifConverterTab,
+    gif_transparency_tab: GifTransparencyTab,
     splitter_tab: SplitterTab,
     merger_tab: MergerTab,
 }
@@ -41,6 +44,7 @@ impl Default for VideoToolKitApp {
 
             clipper_tab: ClipperTab::new(Arc::clone(&status), Arc::clone(&processing)),
             gif_converter_tab: GifConverterTab::new(Arc::clone(&status), Arc::clone(&processing)),
+            gif_transparency_tab: GifTransparencyTab::new(Arc::clone(&status), Arc::clone(&processing)),
             splitter_tab: SplitterTab::new(Arc::clone(&status), Arc::clone(&processing)),
             merger_tab: MergerTab::new(Arc::clone(&status), Arc::clone(&processing)),
         }
@@ -69,6 +73,9 @@ impl eframe::App for VideoToolKitApp {
                 if ui.selectable_label(self.active_tab == Tab::GifConverter, "Convert to GIF").clicked() {
                     self.active_tab = Tab::GifConverter;
                 }
+                if ui.selectable_label(self.active_tab == Tab::GifTransparency, "GIF Transparency").clicked() {
+                    self.active_tab = Tab::GifTransparency;
+                }
                 if ui.selectable_label(self.active_tab == Tab::Splitter, "Split Video").clicked() {
                     self.active_tab = Tab::Splitter;
                 }
@@ -83,6 +90,7 @@ impl eframe::App for VideoToolKitApp {
             match self.active_tab {
                 Tab::Clipper => self.clipper_tab.ui(ui),
                 Tab::GifConverter => self.gif_converter_tab.ui(ui),
+                Tab::GifTransparency => self.gif_transparency_tab.ui(ui),
                 Tab::Splitter => self.splitter_tab.ui(ui),
                 Tab::Merger => self.merger_tab.ui(ui),
             }
