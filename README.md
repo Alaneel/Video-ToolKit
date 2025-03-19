@@ -4,11 +4,15 @@ A comprehensive toolkit for video processing tasks, built in Rust.
 
 ## Features
 
-- **Video Clipper**: Extract specific time segments from MP4 videos
-- **GIF Converter**: Convert MP4 videos to optimized GIF format
+- **Video Clipper**: Extract specific time segments from video files
+- **GIF Converter**: Convert videos to optimized GIF format
 - **GIF Transparency**: Batch process GIFs to make backgrounds transparent
-- **Video Splitter**: Split a 1920x1080 video into 5 equal vertical slices
+- **Video Splitter**: Split a video into equal vertical slices
 - **Audio/Video Merger**: Merge video with audio from different sources
+- **Batch Processing**: Process multiple files in one operation
+- **Profile System**: Save and load operation settings
+- **Plugin Architecture**: Extend functionality with third-party plugins
+- **Multi-Format Support**: Works with a wide range of video, audio, and image formats
 
 ## Requirements
 
@@ -40,6 +44,8 @@ To launch the graphical user interface:
 cargo run --release
 ```
 
+The GUI provides access to all features including video operations, batch processing, profiles, and plugin management.
+
 ### Command-Line Interface
 
 The toolkit can also be used from the command line:
@@ -51,11 +57,12 @@ cargo run --release -- clipper --input video.mp4 --ranges "00:01:00-00:02:00" "0
 ```
 
 Options:
-- `--input`: Input MP4 file path
+- `--input`: Input video file path
 - `--ranges` or `-r`: Time ranges to extract in format START-END (e.g., 00:01:00-00:02:00)
 - `--output-dir` or `-o`: Output directory for video clips (default: output_clips)
 - `--copy-codec`: Copy codec instead of re-encoding (faster but may be less precise)
 - `--suffix` or `-s`: Optional suffix to add to output filenames
+- `--format`: Output format (e.g., mp4, mkv, avi)
 
 #### GIF Converter
 
@@ -64,7 +71,7 @@ cargo run --release -- gif-converter --input video.mp4 --output output.gif --wid
 ```
 
 Options:
-- `--input`: Input MP4 file path
+- `--input`: Input video file path
 - `--output` or `-o`: Output GIF file path
 - `--width` or `-w`: Width to resize to (height adjusted automatically)
 - `--fps` or `-f`: Frames per second (default: 10)
@@ -73,14 +80,12 @@ Options:
 
 #### GIF Transparency
 
-There are two modes for processing GIFs to make their backgrounds transparent:
-
-Process specific GIF files:
 ```bash
 cargo run --release -- gif-transparency input1.gif input2.gif --backup
 ```
 
-Process all GIFs in a directory:
+Or process a directory:
+
 ```bash
 cargo run --release -- gif-transparency-dir ./gifs --recursive --backup
 ```
@@ -96,11 +101,12 @@ cargo run --release -- splitter --input video.mp4 --output-dir output_slices --p
 ```
 
 Options:
-- `--input`: Input MP4 file path
+- `--input`: Input video file path
 - `--output-dir` or `-o`: Output directory (default: output_slices)
 - `--prefix` or `-p`: Prefix for output filenames (default: slice)
 - `--custom-encode`: Custom FFmpeg encoding options
 - `--force`: Process even if video dimensions are not 1920x1080
+- `--format`: Output format (e.g., mp4, mkv, avi)
 
 #### Audio/Video Merger
 
@@ -114,6 +120,60 @@ Options:
 - `--output` or `-o`: Output file path
 - `--shortest`: End when shortest input stream ends
 - `--copy-codec`: Copy codec without re-encoding (faster)
+- `--format`: Output format (e.g., mp4, mkv, avi)
+
+#### Batch Processing
+
+Process multiple files with a single command:
+
+```bash
+cargo run --release -- batch clipper ./videos --recursive --ranges "00:01:00-00:02:00" --output-dir output_clips
+```
+
+General batch options:
+- `--recursive` or `-r`: Process directories recursively
+- `--pattern` or `-p`: File pattern to match (regex)
+- `--parallel`: Process files in parallel (default: true)
+
+See CLI help for operation-specific options.
+
+#### Profile Management
+
+Save, load, and manage operation profiles:
+
+```bash
+cargo run --release -- profile create --name "my_profile" --profile-type clipper --params "output_dir=output_clips" "copy_codec=true"
+```
+
+Profile commands:
+- `list`: List available profiles
+- `show`: Show a specific profile
+- `create`: Create a new profile
+- `delete`: Delete a profile
+- `import`: Import a profile from a file
+- `export`: Export a profile to a file
+
+#### Plugin Management
+
+Work with plugins to extend functionality:
+
+```bash
+cargo run --release -- plugin discover
+```
+
+Plugin commands:
+- `list`: List available plugins
+- `load`: Load a plugin from a file
+- `run`: Run a plugin with parameters
+- `discover`: Discover and load plugins from the default plugin directory
+
+#### Format Support
+
+List supported formats:
+
+```bash
+cargo run --release -- formats
+```
 
 ## Project Structure
 
@@ -121,11 +181,63 @@ This project uses a workspace structure:
 
 - `common`: Shared utilities and error handling
 - `clipper`: Video clipping functionality
-- `gif_converter`: MP4 to GIF conversion
+- `gif_converter`: Video to GIF conversion
 - `gif_transparency`: GIF transparency processing
 - `splitter`: Video splitting functionality
 - `merger`: Audio/video merging functionality
+- `batch_processing`: Multi-file processing capabilities
+- `profile_system`: Save and load operation settings
+- `plugin_system`: Plugin architecture for extensions
 - `ui`: GUI components using egui
+
+## Custom Plugins
+
+You can create your own plugins to extend Video-ToolKit. A plugin is a dynamic library that implements the `Plugin` trait:
+
+1. Create a new library project:
+```bash
+cargo new --lib my_plugin
+```
+
+2. Configure it as a dynamic library in `Cargo.toml`:
+```toml
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+plugin_system = { path = "/path/to/Video-ToolKit/crates/plugin_system" }
+```
+
+3. Implement the Plugin trait:
+```rust
+use plugin_system::{Plugin, PluginMetadata, PLUGIN_API_VERSION};
+
+struct MyPlugin { /* ... */ }
+
+impl Plugin for MyPlugin {
+    fn metadata(&self) -> PluginMetadata {
+        PluginMetadata {
+            name: "my_plugin".to_string(),
+            version: "0.1.0".to_string(),
+            author: "Your Name".to_string(),
+            description: "My custom plugin".to_string(),
+            api_version: PLUGIN_API_VERSION,
+        }
+    }
+    
+    // Implement other required methods...
+}
+
+// Export the plugin
+plugin_system::export_plugin!(MyPlugin);
+```
+
+4. Build the plugin:
+```bash
+cargo build --release
+```
+
+5. Copy the compiled library to the Video-ToolKit plugins directory.
 
 ## Contributing
 

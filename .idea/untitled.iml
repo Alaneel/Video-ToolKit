@@ -10,6 +10,10 @@
       <sourceFolder url="file://$MODULE_DIR$/crates/ui/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/crates/gif_transparency/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/batch_processing/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/plugin_system/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/crates/profile_system/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/watermark_plugin/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
