@@ -14,7 +14,7 @@ A comprehensive toolkit for video processing tasks, built in Rust.
 - **Plugin Architecture**: Extend functionality with third-party plugins
 - **Multi-Format Support**: Works with a wide range of video, audio, and image formats
 
-## Requirements
+## Requirements 
 
 - Rust (latest stable version)
 - FFmpeg (must be installed and available in your PATH)
