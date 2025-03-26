@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use gif_converter::{convert_mp4_to_gif, optimize_conversion};
+use gif_converter::{convert_video_to_gif, optimize_conversion};
 
 pub struct GifConverterTab {
     input_file: String,
@@ -37,7 +37,7 @@ impl GifConverterTab {
             ui.text_edit_singleline(&mut self.input_file);
             if ui.button("Browse").clicked() {
                 if let Some(path) = rfd::FileDialog::new()
-                    .add_filter("Video Files", &["mp4", "avi", "mov", "mkv"])
+                    .add_filter("Video Files", &["mp4", "webm", "avi", "mov", "mkv"])
                     .pick_file() {
                     self.input_file = path.to_string_lossy().to_string();
 
@@ -153,7 +153,7 @@ impl GifConverterTab {
                 let result = if optimize {
                     optimize_conversion(&input_file, &output_file, max_size, width)
                 } else {
-                    convert_mp4_to_gif(&input_file, &output_file, width, fps, max_size)
+                    convert_video_to_gif(&input_file, &output_file, width, fps, max_size)
                 };
 
                 match result {

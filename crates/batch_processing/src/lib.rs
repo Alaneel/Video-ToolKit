@@ -462,7 +462,7 @@ impl BatchProcessor {
                 config.width,
             )
         } else {
-            gif_converter::convert_mp4_to_gif(
+            gif_converter::convert_video_to_gif(
                 &input_file.to_string_lossy(),
                 &output_file.to_string_lossy(),
                 config.width,
