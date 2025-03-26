@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use common::{check_ffmpeg, formats::*, get_supported_formats};
 use clipper::{clip_video, parse_time_ranges};
-use gif_converter::{convert_mp4_to_gif, optimize_conversion};
+use gif_converter::{convert_video_to_gif, optimize_conversion};
 use gif_transparency::{batch_process_gifs, process_directory};
 use splitter::split_video;
 use merger::merge_audio_video;
@@ -53,9 +53,9 @@ enum Commands {
         format: String,
     },
 
-    /// Convert videos to optimized GIF format
+    /// Convert videos (MP4, WebM, etc.) to optimized GIF format
     GifConverter {
-        /// Input video file path
+        /// Input video file path (supports MP4, WebM, AVI, MOV, MKV)
         input: String,
 
         /// Output GIF file path
@@ -551,7 +551,7 @@ fn main() -> Result<(), eframe::Error> {
             let result = if optimize {
                 optimize_conversion(&input, &output, max_size, width)
             } else {
-                convert_mp4_to_gif(&input, &output, width, fps, max_size)
+                convert_video_to_gif(&input, &output, width, fps, max_size)
             };
 
             match result {

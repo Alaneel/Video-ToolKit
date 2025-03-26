@@ -7,8 +7,8 @@ use common::{
     Result, VideoToolkitError
 };
 
-/// Convert MP4 to GIF using FFmpeg with size optimization
-pub fn convert_mp4_to_gif(
+/// Convert any video format (MP4, WebM, etc.) to GIF using FFmpeg with size optimization
+pub fn convert_video_to_gif(
     input_file: &str,
     output_file: &str,
     width: Option<u32>,
@@ -109,7 +109,7 @@ pub fn optimize_conversion(
         for &fps in &fps_options {
             println!("Attempting conversion with width={}px, fps={}...", width, fps);
 
-            match convert_mp4_to_gif(input_file, output_file, Some(width), fps, max_size_mb) {
+            match convert_video_to_gif(input_file, output_file, Some(width), fps, max_size_mb) {
                 Ok(true) => return Ok(true),
                 Ok(false) => {
                     // If file exists but is too large, remove it before the next attempt
@@ -130,5 +130,17 @@ pub fn optimize_conversion(
     println!("Could not achieve target file size with any optimization settings.");
 
     // As a last resort, try with the lowest settings
-    convert_mp4_to_gif(input_file, output_file, Some(120), 3, max_size_mb)
+    convert_video_to_gif(input_file, output_file, Some(120), 3, max_size_mb)
+}
+
+// For backward compatibility - will be deprecated
+#[deprecated(since = "0.2.0", note = "Use convert_video_to_gif instead")]
+pub fn convert_mp4_to_gif(
+    input_file: &str,
+    output_file: &str,
+    width: Option<u32>,
+    fps: u32,
+    max_size_mb: f64,
+) -> Result<bool> {
+    convert_video_to_gif(input_file, output_file, width, fps, max_size_mb)
 }
